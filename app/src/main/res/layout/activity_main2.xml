@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/bg_wave_gradient"
+    android:padding="24dp">
+
+<TextView
+android:id="@+id/tvLoginTitle"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Login"
+android:textSize="24sp"
+android:textColor="@android:color/white"
+android:layout_marginBottom="24dp"
+android:textStyle="bold" />
+
+<EditText
+android:id="@+id/etUsername"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:hint="Enter username"
+android:inputType="text"
+
+android:padding="12dp"
+android:layout_marginBottom="16dp" />
+
+<EditText
+android:id="@+id/etPassword"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:hint="Enter password"
+android:inputType="textPassword"
+
+android:padding="12dp"
+android:layout_marginBottom="16dp" />
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="horizontal"
+
+android:layout_marginBottom="16dp">
+
+<CheckBox
+    android:id="@+id/checkboxRemember"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Remember me"
+    android:textColor="@android:color/white" />
+
+<TextView
+    android:id="@+id/tvForgotPassword"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Forgot password?"
+    android:textColor="#00FFFF"
+    android:textSize="14sp" />
+</LinearLayout>
+
+<Button
+android:id="@+id/btnLogin"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Log in"
+android:backgroundTint="#00FFFF"
+android:textColor="@android:color/white"
+android:padding="12dp" />
+    </LinearLayout>
