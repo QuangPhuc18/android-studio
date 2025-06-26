@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 import androidx.activity.EdgeToEdge;
@@ -24,13 +26,32 @@ public class MainActivity2 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        EditText edtUsername = findViewById(R.id.etUsername);
+        EditText edtPassword = findViewById(R.id.etPassword);
         Button btn = findViewById(R.id.btnLogin);
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(getApplicationContext(),MainActivity3.class);
+                String user = edtUsername.getText().toString().trim();
+                String pass = edtPassword.getText().toString().trim();
+
+                if (user.equals("quangphuc") && pass.equals("123456")) {
+                    Intent it = new Intent(getApplicationContext(), MainActivity3.class);
+                    startActivity(it);
+                } else {
+                    // Sai thông tin
+                    Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        Button btn1 = findViewById(R.id.btnRegister);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(it);
             }
         });
     }
-}
+    }

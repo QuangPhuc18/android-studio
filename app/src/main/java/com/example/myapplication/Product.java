@@ -1,14 +1,17 @@
-package com.example.myapplication; // Thay đổi package name theo project của bạn
+package com.example.myapplication;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class Product {
-    private String id;
-    private String name;
-    private double price;
-    private double originalPrice;
-    private int imageResource;
-    private float rating;
-    private int soldCount;
-    private String description;
+    private final String id;
+    private final String name;
+    private final double price;
+    private final double originalPrice;
+    private final int imageResource;
+    private final float rating;
+    private final int soldCount;
+    private final String description;
 
     // Constructor
     public Product(String id, String name, double price, double originalPrice,
@@ -56,45 +59,14 @@ public class Product {
         return description;
     }
 
-    // Setters
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public void setOriginalPrice(double originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public void setImageResource(int imageResource) {
-        this.imageResource = imageResource;
-    }
-
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    public void setSoldCount(int soldCount) {
-        this.soldCount = soldCount;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    // Utility methods
+    // Utility methods for formatted price
     public String getFormattedPrice() {
-        return "₫" + String.format("%,.0f", price);
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return format.format(price);
     }
 
     public String getFormattedOriginalPrice() {
-        return "₫" + String.format("%,.0f", originalPrice);
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return format.format(originalPrice);
     }
 }
