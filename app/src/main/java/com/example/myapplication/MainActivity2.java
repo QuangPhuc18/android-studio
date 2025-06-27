@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
@@ -26,6 +27,7 @@ public class MainActivity2 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ImageView imgLogo = findViewById(R.id.imgLogo);
         EditText edtUsername = findViewById(R.id.etUsername);
         EditText edtPassword = findViewById(R.id.etPassword);
         Button btn = findViewById(R.id.btnLogin);

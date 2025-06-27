@@ -45,6 +45,18 @@ public class MainActivity3 extends AppCompatActivity {
 
         // Khởi tạo view
         initViews();
+        searchEditText.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterProducts(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
 
         // Tạo dữ liệu mẫu
         setupData();
@@ -63,6 +75,7 @@ public class MainActivity3 extends AppCompatActivity {
             Intent intent = new Intent(MainActivity3.this, CartActivity.class);
             startActivity(intent);
         });
+
 
     }
 
@@ -84,10 +97,10 @@ public class MainActivity3 extends AppCompatActivity {
         products.add(new Product("3", "MacBook Pro M3", 52990000, 59990000,
                 R.drawable.img_2, 4.9f, 45, "Laptop Apple"));
         products.add(new Product("4", "Dell XPS 13", 25990000, 29990000,  R.drawable.img_3, 4.5f, 32, "Laptop Dell"));
-        products.add(new Product("5", "Áo thun Basic", 299000, 399000,
-                android.R.drawable.ic_menu_gallery, 4.2f, 200, "Áo thun cotton"));
-        products.add(new Product("6", "Quần jeans Slim", 599000, 799000,
-                android.R.drawable.ic_menu_gallery, 4.4f, 150, "Quần jeans nam"));
+        products.add(new Product("5", "Apple Watch Series 10 42mm (GPS) Viền Nhôm Dây Cao Su Size S/M | Chính hãng Apple Việt Nam", 10590000, 399000,
+                R.drawable.dongho, 4.2f, 200, "Áo thun cotton"));
+        products.add(new Product("6", "Camera IP 360 độ 4MP Imou IPC-A43", 599000, 799000,
+               R.drawable.camera, 4.4f, 150, "Camera IP 360 độ 4MP Imou IPC-A43"));
     }
 
     private void setupRecyclerViews() {
@@ -115,6 +128,15 @@ public class MainActivity3 extends AppCompatActivity {
             intent.putExtra("description", product.getDescription());
             startActivity(intent);
         });
-    }
 
+    }
+    private void filterProducts(String query) {
+        List<Product> filteredList = new ArrayList<>();
+        for (Product product : products) {
+            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(product);
+            }
+        }
+        productAdapter.updateList(filteredList);
+    }
 }

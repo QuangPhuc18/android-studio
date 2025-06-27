@@ -5,24 +5,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+
     private List<Product> products;
     private OnProductClickListener listener;
 
+    // Interface để callback khi click vào sản phẩm
     public interface OnProductClickListener {
         void onProductClick(Product product);
     }
 
     public ProductAdapter(List<Product> products) {
-        this.products = products;
+        this.products = new ArrayList<>(products); // đảm bảo sao chép danh sách ban đầu
     }
 
     public void setOnProductClickListener(OnProductClickListener listener) {
         this.listener = listener;
+    }
+
+    // ✅ Hàm dùng cho tìm kiếm
+    public void updateList(List<Product> newList) {
+        this.products = new ArrayList<>(newList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -58,21 +71,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productSold = itemView.findViewById(R.id.productSold);
 
             itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onProductClick(products.get(position));
-                    }
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onProductClick(products.get(position));
                 }
             });
         }
 
         public void bind(Product product) {
             productName.setText(product.getName());
-            productPrice.setText(product.getFormattedPrice());
+            productPrice.setText(formatCurrency(product.getPrice()));
             productSold.setText("Đã bán " + product.getSoldCount());
             productImage.setImageResource(product.getImageResource());
         }
 
+        private String formatCurrency(double amount) {
+            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            return format.format(amount);
+        }
     }
 }

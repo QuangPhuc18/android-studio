@@ -83,7 +83,7 @@
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="Register"
             android:textStyle="bold"
             android:background="@android:color/darker_gray"
             android:textColor="#000000" />

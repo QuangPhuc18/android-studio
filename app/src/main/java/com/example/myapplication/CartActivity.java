@@ -3,33 +3,37 @@ package com.example.myapplication;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity {
     private ArrayList<Product> cartList;
     private RecyclerView recyclerView;
     private CartAdapter adapter;
+    private TextView txtTotalPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        // Khởi tạo danh sách và ánh xạ RecyclerView
-        cartList = new ArrayList<>();
+        // Ánh xạ view
         recyclerView = findViewById(R.id.recyclerCart);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Nút quay lại
+        txtTotalPrice = findViewById(R.id.totalPrice);
         Button btnBack = findViewById(R.id.btnBack);
+
+        // Sự kiện nút quay lại
         btnBack.setOnClickListener(v -> finish());
 
-        // Lấy dữ liệu từ SharedPreferences
+        // Khởi tạo danh sách
+        cartList = new ArrayList<>();
         SharedPreferences prefs = getSharedPreferences("cart", MODE_PRIVATE);
         String data = prefs.getString("cart_items", "");
 
@@ -42,19 +46,38 @@ public class CartActivity extends AppCompatActivity {
                         String name = parts[0];
                         double price = Double.parseDouble(parts[1]);
                         int image = Integer.parseInt(parts[2]);
-
-                        // Dùng constructor rút gọn
-                        Product product = new Product(name, price, image);
-                        cartList.add(product);
+                        cartList.add(new Product(name, price, image));
                     } catch (Exception e) {
-                        e.printStackTrace(); // Bắt lỗi parse sai định dạng
+                        e.printStackTrace();
                     }
                 }
             }
         }
 
-        // Khởi tạo adapter và gắn vào RecyclerView
-        adapter = new CartAdapter(cartList);
+        // Thiết lập RecyclerView
+        adapter = new CartAdapter(cartList, prefs);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        // Gán callback cập nhật tổng tiền khi có thay đổi giỏ hàng
+        adapter.setOnCartChangedListener(this::updateTotalPrice);
+
+        // Tính tổng ban đầu
+        updateTotalPrice();
+    }
+
+    // Hàm cập nhật tổng giá
+    private void updateTotalPrice() {
+        double total = 0;
+        for (Product product : cartList) {
+            total += product.getPrice();
+        }
+        txtTotalPrice.setText("Tổng: " + formatCurrency(total));
+    }
+
+    // Hàm định dạng tiền
+    private String formatCurrency(double amount) {
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return format.format(amount);
     }
 }

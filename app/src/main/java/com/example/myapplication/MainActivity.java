@@ -34,25 +34,25 @@ public class MainActivity extends AppCompatActivity {
             String confirmPass = edtConfirmPassword.getText().toString().trim();
 
             if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || confirmPass.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!pass.equals(confirmPass)) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Mật khẩu không đúng", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // TODO: Xử lý đăng ký (ghi vào database, Firebase, SQLite...)
-            Toast.makeText(this, "Registered Successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
 
-            // Chuyển sang màn hình đăng nhập hoặc MainActivity
-            startActivity(new Intent(MainActivity.this, MainActivity3.class));
+
+            startActivity(new Intent(MainActivity.this, MainActivity2.class));
             finish();
         });
 
         txtLoginLink.setOnClickListener(v -> {
-            // Điều hướng về LoginActivity
+
             startActivity(new Intent(MainActivity.this, MainActivity2.class));
             finish();
         });
