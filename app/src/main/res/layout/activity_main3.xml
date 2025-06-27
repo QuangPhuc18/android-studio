@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header với logo và thanh tìm kiếm -->
+        <!-- Header: Logo + Cart -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,14 +28,16 @@
                 android:text="ShopApp"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#2196F3"
-                android:gravity="start" />
+                android:textColor="#2196F3" />
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_search"
-                android:layout_marginEnd="8dp" />
+                android:id="@+id/imgCart"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_cart"
+                android:contentDescription="Giỏ hàng"
+                android:clickable="true"
+                android:focusable="true" />
 
         </LinearLayout>
 
@@ -63,7 +65,7 @@
             android:textColor="#333333"
             android:layout_marginBottom="12dp" />
 
-        <!-- RecyclerView cho danh mục -->
+        <!-- RecyclerView danh mục ngang -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/categoriesRecyclerView"
             android:layout_width="match_parent"
@@ -73,7 +75,7 @@
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never" />
 
-        <!-- Tiêu đề sản phẩm -->
+        <!-- Tiêu đề sản phẩm nổi bật -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,7 +85,7 @@
             android:textColor="#333333"
             android:layout_marginBottom="12dp" />
 
-        <!-- RecyclerView cho sản phẩm -->
+        <!-- RecyclerView danh sách sản phẩm -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productsRecyclerView"
             android:layout_width="match_parent"

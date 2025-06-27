@@ -72,5 +72,18 @@
             android:layout_marginTop="12dp"
             android:textSize="16sp"
             android:textColor="#424242" />
+        <Button
+            android:id="@+id/btnAddToCart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thêm vào giỏ hàng"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF5722"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+             />
+
     </LinearLayout>
 </ScrollView>

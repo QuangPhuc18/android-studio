@@ -21,6 +21,7 @@
         <activity
             android:name=".ItemShoe"
             android:exported="false" /> <!-- Giữ lại MainActivity2 là launcher -->
+        <activity android:name=".CartActivity" />
         <activity
             android:name=".MainActivity2"
             android:exported="true"

@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -56,7 +57,15 @@ public class MainActivity3 extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
         categoryRecyclerView = findViewById(R.id.categoriesRecyclerView);
         productRecyclerView = findViewById(R.id.productsRecyclerView);
+
+        ImageView imgCart = findViewById(R.id.imgCart);
+        imgCart.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity3.this, CartActivity.class);
+            startActivity(intent);
+        });
+
     }
+
 
 
     private void setupData() {

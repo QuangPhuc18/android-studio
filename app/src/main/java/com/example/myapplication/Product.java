@@ -4,16 +4,16 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Product {
-    private final String id;
-    private final String name;
-    private final double price;
-    private final double originalPrice;
-    private final int imageResource;
-    private final float rating;
-    private final int soldCount;
-    private final String description;
+    private String id;
+    private String name;
+    private double price;
+    private double originalPrice;
+    private int imageResource;
+    private float rating;
+    private int soldCount;
+    private String description;
 
-    // Constructor
+    // ✅ Constructor đầy đủ thông tin (dùng ở ProductDetailActivity)
     public Product(String id, String name, double price, double originalPrice,
                    int imageResource, float rating, int soldCount, String description) {
         this.id = id;
@@ -24,6 +24,13 @@ public class Product {
         this.rating = rating;
         this.soldCount = soldCount;
         this.description = description;
+    }
+
+    // ✅ Constructor đơn giản (dùng khi chỉ lưu giỏ hàng)
+    public Product(String name, double price, int imageResource) {
+        this.name = name;
+        this.price = price;
+        this.imageResource = imageResource;
     }
 
     // Getters
@@ -59,7 +66,7 @@ public class Product {
         return description;
     }
 
-    // Utility methods for formatted price
+    // Utility methods
     public String getFormattedPrice() {
         NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         return format.format(price);
