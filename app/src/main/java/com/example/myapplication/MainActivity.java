@@ -9,16 +9,25 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText edtName, edtEmail, edtPassword, edtConfirmPassword;
     Button btnSignUp;
     TextView txtLoginLink;
 
+    private static final String REGISTER_URL = "https://reqres.in/api/register"; // API test đăng ký
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main4);
+        setContentView(R.layout.activity_main4); // layout của trang đăng ký
 
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
@@ -39,22 +48,40 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!pass.equals(confirmPass)) {
-                Toast.makeText(this, "Mật khẩu không đúng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // TODO: Xử lý đăng ký (ghi vào database, Firebase, SQLite...)
-            Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
-
-
-            startActivity(new Intent(MainActivity.this, MainActivity2.class));
-            finish();
+            registerUser(email, pass); // Gọi API đăng ký
         });
 
         txtLoginLink.setOnClickListener(v -> {
-
-            startActivity(new Intent(MainActivity.this, MainActivity2.class));
+            startActivity(new Intent(MainActivity.this, MainActivity2.class)); // chuyển đến trang đăng nhập
             finish();
         });
+    }
+
+    private void registerUser(String email, String password) {
+        StringRequest request = new StringRequest(Request.Method.POST, REGISTER_URL,
+                response -> {
+                    Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                    // ✅ Chuyển đến MainActivity3 khi đăng ký thành công
+                    Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                    startActivity(intent);
+                    finish();
+                },
+                error -> {
+                    Toast.makeText(this, "Đăng ký thất bại: " + error.toString(), Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
     }
 }

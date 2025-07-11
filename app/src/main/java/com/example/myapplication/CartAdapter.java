@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -45,31 +47,37 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     @Override
     public void onBindViewHolder(CartViewHolder holder, int position) {
         Product product = cartList.get(position);
+
         holder.name.setText(product.getName());
         holder.price.setText(formatCurrency(product.getPrice()));
-        holder.image.setImageResource(product.getImageResource());
+
+        // Load ảnh từ URL bằng Glide
+        Glide.with(holder.itemView.getContext())
+                .load(product.getImageUrl())
+//                .placeholder(R.drawable.placeholder)
+//                .error(R.drawable.error_image)
+                .into(holder.image);
 
         // Xử lý nút XÓA
         holder.btnDelete.setOnClickListener(v -> {
-            // Xoá sản phẩm
             cartList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, cartList.size());
 
-            // Cập nhật SharedPreferences
+            // Cập nhật lại SharedPreferences
             StringBuilder newData = new StringBuilder();
             for (int i = 0; i < cartList.size(); i++) {
                 Product p = cartList.get(i);
                 newData.append(p.getName()).append("~")
                         .append(p.getPrice()).append("~")
-                        .append(p.getImageResource());
+                        .append(p.getImageUrl());
                 if (i < cartList.size() - 1) {
                     newData.append("|");
                 }
             }
+
             sharedPreferences.edit().putString("cart_items", newData.toString()).apply();
 
-            // Gọi callback để cập nhật tổng tiền
             if (cartChangedListener != null) {
                 cartChangedListener.onCartUpdated();
             }

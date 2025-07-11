@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -18,13 +22,14 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private String name;
     private double price;
-    private int image;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
+        // Ánh xạ view
         productImage = findViewById(R.id.productImage);
         btnBack = findViewById(R.id.btnBack);
         nameText = findViewById(R.id.productName);
@@ -35,29 +40,38 @@ public class ProductDetailActivity extends AppCompatActivity {
         descriptionText = findViewById(R.id.productDescription);
         btnAddToCart = findViewById(R.id.btnAddToCart);
 
-        // Nhận dữ liệu
+        // Nhận dữ liệu từ Intent
         name = getIntent().getStringExtra("name");
         price = getIntent().getDoubleExtra("price", 0.0);
         double originalPrice = getIntent().getDoubleExtra("originalPrice", 0.0);
-        image = getIntent().getIntExtra("image", 0);
+        imageUrl = getIntent().getStringExtra("imageUrl"); // <-- dùng URL
         float rating = getIntent().getFloatExtra("rating", 0.0f);
         int sold = getIntent().getIntExtra("sold", 0);
         String description = getIntent().getStringExtra("description");
 
+        // Set dữ liệu vào view
         nameText.setText(name);
         priceText.setText(formatCurrency(price));
         oldPriceText.setText(formatCurrency(originalPrice));
         ratingText.setText("★ " + rating);
         soldText.setText("Đã bán: " + sold);
         descriptionText.setText(description);
-        productImage.setImageResource(image);
 
+        // Hiển thị ảnh bằng Glide
+        Glide.with(this)
+                .load(imageUrl)
+//                .placeholder(R.drawable.placeholder)
+//                .error(R.drawable.error_image)
+                .into(productImage);
+
+        // Quay lại
         btnBack.setOnClickListener(v -> finish());
 
+        // Thêm vào giỏ hàng
         btnAddToCart.setOnClickListener(v -> {
             SharedPreferences prefs = getSharedPreferences("cart", MODE_PRIVATE);
             String oldData = prefs.getString("cart_items", "");
-            String newItem = name + "~" + price + "~" + image;
+            String newItem = name + "~" + price + "~" + imageUrl;
             String newData = oldData.isEmpty() ? newItem : oldData + "|" + newItem;
             prefs.edit().putString("cart_items", newData).apply();
 

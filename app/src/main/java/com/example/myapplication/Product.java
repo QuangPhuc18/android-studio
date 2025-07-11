@@ -1,43 +1,34 @@
 package com.example.myapplication;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 public class Product {
-    private String id;
     private String name;
     private double price;
-    private double originalPrice;
-    private int imageResource;
-    private float rating;
-    private int soldCount;
+    private String imageUrl;
     private String description;
+    private float rating;
 
-    // ✅ Constructor đầy đủ thông tin (dùng ở ProductDetailActivity)
-    public Product(String id, String name, double price, double originalPrice,
-                   int imageResource, float rating, int soldCount, String description) {
-        this.id = id;
+    private String category;
+
+    // ✅ Constructor dùng cho API (đầy đủ thông tin)
+    public Product(String name, double price, String imageUrl, String description, float rating) {
         this.name = name;
         this.price = price;
-        this.originalPrice = originalPrice;
-        this.imageResource = imageResource;
-        this.rating = rating;
-        this.soldCount = soldCount;
+        this.imageUrl = imageUrl;
         this.description = description;
+        this.rating = rating;
+
     }
 
-    // ✅ Constructor đơn giản (dùng khi chỉ lưu giỏ hàng)
-    public Product(String name, double price, int imageResource) {
+    // ✅ Constructor dùng cho giỏ hàng (chỉ cần name, price, imageUrl)
+    public Product(String name, double price, String imageUrl) {
         this.name = name;
         this.price = price;
-        this.imageResource = imageResource;
+        this.imageUrl = imageUrl;
+        this.description = "";     // gán mặc định nếu không có
+        this.rating = 0.0f;        // gán mặc định nếu không có
     }
 
-    // Getters
-    public String getId() {
-        return id;
-    }
-
+    // ✅ Getter
     public String getName() {
         return name;
     }
@@ -46,34 +37,17 @@ public class Product {
         return price;
     }
 
-    public double getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public int getImageResource() {
-        return imageResource;
-    }
-
-    public float getRating() {
-        return rating;
-    }
-
-    public int getSoldCount() {
-        return soldCount;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getDescription() {
         return description;
     }
 
-    // Utility methods
-    public String getFormattedPrice() {
-        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        return format.format(price);
+    public float getRating() {
+        return rating;
     }
 
-    public String getFormattedOriginalPrice() {
-        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        return format.format(originalPrice);
-    }
+
 }

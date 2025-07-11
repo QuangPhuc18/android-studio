@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -18,21 +21,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     private List<Product> products;
     private OnProductClickListener listener;
+    private Context context;
 
-    // Interface để callback khi click vào sản phẩm
     public interface OnProductClickListener {
         void onProductClick(Product product);
     }
 
-    public ProductAdapter(List<Product> products) {
-        this.products = new ArrayList<>(products); // đảm bảo sao chép danh sách ban đầu
+    public ProductAdapter(List<Product> products, Context context) {
+        this.products = new ArrayList<>(products); // tạo bản sao danh sách
+        this.context = context;
     }
 
     public void setOnProductClickListener(OnProductClickListener listener) {
         this.listener = listener;
     }
 
-    // ✅ Hàm dùng cho tìm kiếm
     public void updateList(List<Product> newList) {
         this.products = new ArrayList<>(newList);
         notifyDataSetChanged();
@@ -61,14 +64,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private ImageView productImage;
         private TextView productName;
         private TextView productPrice;
-        private TextView productSold;
+        private TextView productRating;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
-            productSold = itemView.findViewById(R.id.productSold);
+            productRating = itemView.findViewById(R.id.productSold); // tái sử dụng TextView "sold" cũ để hiển thị rating
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -81,8 +84,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         public void bind(Product product) {
             productName.setText(product.getName());
             productPrice.setText(formatCurrency(product.getPrice()));
-            productSold.setText("Đã bán " + product.getSoldCount());
-            productImage.setImageResource(product.getImageResource());
+            productRating.setText("★ " + product.getRating());
+
+            Glide.with(context)
+                    .load(product.getImageUrl())
+//                    .placeholder(R.drawable.placeholder)
+//                    .error(R.drawable.error_image)
+                    .into(productImage);
         }
 
         private String formatCurrency(double amount) {

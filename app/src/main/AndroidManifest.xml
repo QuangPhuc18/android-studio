@@ -36,6 +36,7 @@
             </intent-filter>
         </activity> <!-- Nếu cần giữ MainActivity3 -->
         <activity android:name=".ProductDetailActivity" />
+        <activity android:name=".PaymentActivity" />
     </application>
 
 </manifest>

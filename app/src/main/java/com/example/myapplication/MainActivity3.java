@@ -15,6 +15,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,39 +39,32 @@ public class MainActivity3 extends AppCompatActivity {
     private List<Category> categories;
     private List<Product> products;
 
+    private String selectedCategoryUrl = "https://dummyjson.com/products/category/smartphones";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main3);
 
-        // Cài đặt padding cho status bar nếu cần
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Khởi tạo view
         initViews();
-        searchEditText.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        setupCategories();
+        setupRecyclerViews();
+        fetchProductsFromApi(selectedCategoryUrl);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+        searchEditText.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterProducts(s.toString());
             }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
+            @Override public void afterTextChanged(android.text.Editable s) {}
         });
-
-        // Tạo dữ liệu mẫu
-        setupData();
-
-        // Cấu hình RecyclerView
-        setupRecyclerViews();
     }
 
     private void initViews() {
@@ -75,61 +77,75 @@ public class MainActivity3 extends AppCompatActivity {
             Intent intent = new Intent(MainActivity3.this, CartActivity.class);
             startActivity(intent);
         });
-
-
     }
 
-
-
-    private void setupData() {
+    private void setupCategories() {
         categories = new ArrayList<>();
-        categories.add(new Category("1", "Điện thoại", R.drawable.catephone));
-        categories.add(new Category("2", "Máy tính", R.drawable.catelap));
-        categories.add(new Category("3", "Đồng hồ", R.drawable.catewatch));
-        categories.add(new Category("4", "Phụ kiện", R.drawable.catephukien));
-//        categories.add(new Category("5", "Sách", R.drawable.ic_menu_agenda));
+        categories.add(new Category("smartphones", "Điện thoại", R.drawable.catephone));
+        categories.add(new Category("laptops", "Máy tính", R.drawable.catelap));
+        categories.add(new Category("mens-watches", "Đồng hồ", R.drawable.catewatch));
+        categories.add(new Category("fragrances", "Phụ kiện", R.drawable.catephukien));
+    }
 
+    private void fetchProductsFromApi(String url) {
         products = new ArrayList<>();
-        products.add(new Product("1", "iPhone 15 Pro Max", 29990000, 34990000,
-                R.drawable.img, 4.8f, 120, "Điện thoại cao cấp"));
-        products.add(new Product("2", "Samsung Galaxy S24", 24990000, 27990000,
-                R.drawable.img_1, 4.6f, 85, "Smartphone Android"));
-        products.add(new Product("3", "MacBook Pro M3", 52990000, 59990000,
-                R.drawable.img_2, 4.9f, 45, "Laptop Apple"));
-        products.add(new Product("4", "Dell XPS 13", 25990000, 29990000,  R.drawable.img_3, 4.5f, 32, "Laptop Dell"));
-        products.add(new Product("5", "Apple Watch Series 10 42mm (GPS) Viền Nhôm Dây Cao Su Size S/M | Chính hãng Apple Việt Nam", 10590000, 399000,
-                R.drawable.dongho, 4.2f, 200, "Áo thun cotton"));
-        products.add(new Product("6", "Camera IP 360 độ 4MP Imou IPC-A43", 599000, 799000,
-               R.drawable.camera, 4.4f, 150, "Camera IP 360 độ 4MP Imou IPC-A43"));
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray productArray = response.getJSONArray("products");
+                        for (int i = 0; i < productArray.length(); i++) {
+                            JSONObject obj = productArray.getJSONObject(i);
+                            String name = obj.getString("title");
+                            double price = obj.getDouble("price");
+                            String imageUrl = obj.getString("thumbnail");
+                            String description = obj.getString("description");
+                            float rating = (float) obj.getDouble("rating");
+
+                            products.add(new Product(name, price, imageUrl, description, rating));
+                        }
+
+                        if (productAdapter == null) {
+                            productAdapter = new ProductAdapter(products, this);
+                            productRecyclerView.setAdapter(productAdapter);
+                        } else {
+                            productAdapter.updateList(products);
+                        }
+
+                        productAdapter.setOnProductClickListener(product -> {
+                            Intent intent = new Intent(MainActivity3.this, ProductDetailActivity.class);
+                            intent.putExtra("name", product.getName());
+                            intent.putExtra("price", product.getPrice());
+                            intent.putExtra("imageUrl", product.getImageUrl());
+                            intent.putExtra("description", product.getDescription());
+                            startActivity(intent);
+                        });
+
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Lỗi xử lý JSON", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Lỗi khi gọi API", Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(request);
     }
 
     private void setupRecyclerViews() {
         categoryAdapter = new CategoryAdapter(categories);
-        categoryRecyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         categoryRecyclerView.setAdapter(categoryAdapter);
 
-        productAdapter = new ProductAdapter(products);
         productRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        productRecyclerView.setAdapter(productAdapter);
 
-        // Bắt sự kiện click
-        categoryAdapter.setOnCategoryClickListener(category ->
-                Toast.makeText(this, "Chọn danh mục: " + category.getName(), Toast.LENGTH_SHORT).show());
-
-        productAdapter.setOnProductClickListener(product ->
-                Toast.makeText(this, "Chọn sản phẩm: " + product.getName(), Toast.LENGTH_SHORT).show());
-
-        productAdapter.setOnProductClickListener(product -> {
-            Intent intent = new Intent(MainActivity3.this, ProductDetailActivity.class);
-            intent.putExtra("name", product.getName());
-            intent.putExtra("price", product.getPrice());
-            intent.putExtra("image", product.getImageResource());
-            intent.putExtra("description", product.getDescription());
-            startActivity(intent);
+        categoryAdapter.setOnCategoryClickListener(category -> {
+            selectedCategoryUrl = "https://dummyjson.com/products/category/" + category.getId();
+            fetchProductsFromApi(selectedCategoryUrl);
+            Toast.makeText(this, "Chọn: " + category.getName(), Toast.LENGTH_SHORT).show();
         });
-
     }
+
     private void filterProducts(String query) {
         List<Product> filteredList = new ArrayList<>();
         for (Product product : products) {
